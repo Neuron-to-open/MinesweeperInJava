@@ -54,6 +54,8 @@ public class LoginFrame extends JFrame {
                 if (authenticate(username, password)) {
                     JOptionPane.showMessageDialog(LoginFrame.this, "登录成功");
                     // 打开游戏主界面
+                    openMinesweeperFrame();
+                    dispose();
                 } else {
                     JOptionPane.showMessageDialog(LoginFrame.this, "用户名或密码错误");
                 }
@@ -100,6 +102,11 @@ public class LoginFrame extends JFrame {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private void openMinesweeperFrame() {
+        MinesweeperFrame minesweeperFrame = new MinesweeperFrame();
+        minesweeperFrame.setVisible(true);
     }
 
 }
