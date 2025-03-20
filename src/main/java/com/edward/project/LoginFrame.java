@@ -65,13 +65,20 @@ public class LoginFrame extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                if (register(username, password)) {
-                    JOptionPane.showMessageDialog(LoginFrame.this, "注册成功");
-                } else {
-                    JOptionPane.showMessageDialog(LoginFrame.this, "注册失败，用户名可能已存在");
-                }
+                // 隐藏当前登录界面
+                setVisible(false);
+
+                // 打开注册窗口
+                RegisterFrame registerFrame = new RegisterFrame();
+                registerFrame.setVisible(true);
+
+                // 监听注册窗口关闭事件，重新显示登录窗口】
+                registerFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosed(java.awt.event.WindowEvent e) {
+                        setVisible(true);
+                    }
+                });
             }
         });
     }
