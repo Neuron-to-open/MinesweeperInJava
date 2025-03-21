@@ -1,8 +1,5 @@
 package com.edward.project;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * @author Neuron-to-Opens
  * @Description
@@ -13,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.*;
 
 public class LoginFrame extends JFrame {
@@ -53,6 +52,12 @@ public class LoginFrame extends JFrame {
                 String password = new String(passwordField.getPassword());
                 if (authenticate(username, password)) {
                     JOptionPane.showMessageDialog(LoginFrame.this, "登录成功");
+
+                    // 获取登录的IP地址
+                    String ipAddress = getClientIpAddress();
+                    System.out.println("登录IP地址: " + ipAddress);
+
+                    recordLogin(username, ipAddress);
                     // 打开游戏主界面
                     openMinesweeperFrame();
                     dispose();
@@ -114,6 +119,29 @@ public class LoginFrame extends JFrame {
     private void openMinesweeperFrame() {
         MinesweeperFrame minesweeperFrame = new MinesweeperFrame();
         minesweeperFrame.setVisible(true);
+    }
+
+
+    private String getClientIpAddress() {
+        try {
+            InetAddress localhost = InetAddress.getLocalHost();
+            return localhost.getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return "Unknown IP";
+        }
+    }
+
+    private void recordLogin(String username, String ipAddress) {
+        String sql = "INSERT INTO user_login_log (username, ip_address) VALUES (?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, ipAddress);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
